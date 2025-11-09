@@ -1,0 +1,26 @@
+name: Build GUI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Ensure MSBuild from Visual Studio is on PATH
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build Release
+        shell: cmd
+        run: msbuild /p:Configuration=Release;TargetFrameworkVersion=v4.8;Platform=AnyCPU;DebugSymbols=false;DebugType=None .\source\JIEJIE.NET.GUI.csproj
+
+      - name: Upload artifact (Release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: JIEJIE.NET.GUI-Release
+          path: |
+            source\bin\Release\
+          if-no-files-found: error
